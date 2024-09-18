@@ -141,32 +141,32 @@ async function storeImageAndData(filename, buffer) {
     const ocrCollection = db.collection('ocr');
     const objectDetectionCollection = db.collection('object_detection');
     const facesCollection = db.collection('faces');
-    const facesWithBoxesCollection = db.collection('faces_with_boxes'); // New collection for faces with bounding boxes
+    const facesWithBoxesCollection = db.collection('faces_with_boxes'); 
 
-    // Generate hash from the image buffer
+    // Generating hash from the image buffer
     const hash = generateHash(buffer);
 
     try {
-        // Check for duplicate image using the hash
+        // Checking for duplicate image using the hash
         const existingImage = await imageCollection.findOne({ hash });
         if (existingImage) {
             console.log(`Duplicate image detected: ${filename}`);
-            return; // Skip processing for duplicate images
+            return; 
         }
 
-        // Convert image buffer to Base64 string
+        // Converting image buffer to Base64 string
         const base64Image = buffer.toString('base64');
 
-        // Store image data
+       
         await imageCollection.insertOne({
             filename,
-            image: base64Image, // Store image as Base64 string
+            image: base64Image, 
             hash,
             uploadDate: new Date(),
         });
         console.log(`Stored ${filename} in images collection`);
 
-        // Generate and store caption
+
         const caption = await generateCaption(buffer);
         await captionCollection.updateOne(
             { hash },
@@ -175,7 +175,6 @@ async function storeImageAndData(filename, buffer) {
         );
         console.log(`Stored caption for hash ${hash} in captions collection`);
 
-        // Perform OCR and store result
         const ocrText = await performOCR(buffer);
         await ocrCollection.updateOne(
             { hash },
@@ -184,7 +183,7 @@ async function storeImageAndData(filename, buffer) {
         );
         console.log(`Stored OCR text for hash ${hash} in OCR collection`);
 
-        // Perform object detection and store results
+        
         const detectedObjects = await performObjectDetection(buffer);
         await objectDetectionCollection.updateOne(
             { hash },
@@ -193,7 +192,7 @@ async function storeImageAndData(filename, buffer) {
         );
         console.log(`Stored object detection results for hash ${hash} in object_detection collection`);
 
-        // Perform face detection and store results
+        
         const faceData = await performFaceDetection(buffer);
 
         if (faceData && Array.isArray(faceData.face_encodings) && faceData.face_encodings.length > 0) {
@@ -202,7 +201,7 @@ async function storeImageAndData(filename, buffer) {
                 const boundingBox = faceData.bounding_boxes && faceData.bounding_boxes[i]; // Check if bounding_boxes exists
                 const uniqueId = faceData.unique_ids ? faceData.unique_ids[i] || crypto.randomBytes(16).toString('hex') : crypto.randomBytes(16).toString('hex');
 
-                // Store in faces collection
+                
                 await facesCollection.updateOne(
                     { hash, face_encoding: face },
                     {
@@ -210,14 +209,14 @@ async function storeImageAndData(filename, buffer) {
                             filename,
                             face_encoding: face,
                             unique_id: uniqueId,
-                            image: base64Image,  // Store face image as Base64
+                            image: base64Image,  
                         },
                     },
                     { upsert: true }
                 );
                 console.log(`Stored face ${i + 1} data with unique_id ${uniqueId} in faces collection`);
 
-                // Store in faces_with_boxes collection
+                
                 if (boundingBox) {
                     await facesWithBoxesCollection.updateOne(
                         { hash, face_encoding: face },
@@ -226,8 +225,8 @@ async function storeImageAndData(filename, buffer) {
                                 filename,
                                 face_encoding: face,
                                 unique_id: uniqueId,
-                                bounding_box: boundingBox, // Store bounding box info
-                                image: base64Image,  // Store face image as Base64
+                                bounding_box: boundingBox, 
+                                image: base64Image,  
                             },
                         },
                         { upsert: true }
@@ -284,29 +283,28 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
 app.get('/images', async (req, res) => {
     try {
-        // Connect to the database and get the images collection
+        
         const db = await getDatabase();
         const imageCollection = db.collection('images');
 
         // Fetch all images
         const images = await imageCollection.find({}).toArray();
 
-        // Send images as a response
         res.status(200).json(images);
     } catch (err) {
         console.error('Error fetching images:', err);
         res.status(500).send('Error fetching images.');
     }
 });
-// DELETE endpoint to delete an image by hash
+
 app.delete('/deleteByHash/:hash', async (req, res) => {
     const imageHash = req.params.hash;
 
     try {
-        // Get the database connection
+        
         const db = await getDatabase();
 
-        // Define your collections
+        
         const imagesCollection = db.collection('images');
         const captionsCollection = db.collection('captions');
         const ocrCollection = db.collection('ocr');
@@ -314,7 +312,7 @@ app.delete('/deleteByHash/:hash', async (req, res) => {
         const facesCollection = db.collection('faces');
         const facesWithBoxesCollection = db.collection('faces_with_boxes');
 
-        // Perform delete operations using the hash
+        
         const deleteImages = await imagesCollection.deleteMany({ hash: imageHash });
         const deleteCaptions = await captionsCollection.deleteMany({ hash: imageHash });
         const deleteOcr = await ocrCollection.deleteMany({ hash: imageHash });
@@ -347,10 +345,9 @@ app.get('/faces', async (req, res) => {
         const facesCollection = db.collection('faces_with_boxes');
         const faces = await facesCollection.find({}).toArray();
 
-        // Filter out duplicate faces based on unique_id
         const uniqueFaces = Array.from(new Map(faces.map(face => [face.unique_id, face])).values());
 
-        // console.log(uniqueFaces); // Log the filtered faces
+       
         res.json(uniqueFaces);
     } catch (error) {
         console.error('Error retrieving faces:', error);
@@ -369,13 +366,13 @@ app.get('/similar-faces', async (req, res) => {
         const facesCollection = db.collection('faces');
         const faces = await facesCollection.find({}).toArray();
 
-        // Group faces by unique_id
+        
         const faceGroups = faces.reduce((acc, face) => {
             (acc[face.unique_id] = acc[face.unique_id] || []).push(face);
             return acc;
         }, {});
 
-        // Convert the groups object into an array of face groups
+        
         const groupedFaces = Object.values(faceGroups);
 
         res.json(groupedFaces);
@@ -397,23 +394,23 @@ app.post('/tag-face', async (req, res) => {
       const facesCollection = db.collection('faces');
       const facesWithBoxesCollection = db.collection('faces_with_boxes');
   
-      // Fetch all similar faces based on the unique_id
+     
       const similarFaces = await facesCollection.find({ unique_id }).toArray();
   
       if (similarFaces.length === 0) {
         return res.status(404).json({ error: 'No similar faces found for the provided unique ID' });
       }
   
-      // Extract all unique_ids from the similar faces
+      
       const uniqueIds = similarFaces.map(face => face.unique_id);
   
-      // Update the label for all similar faces in the faces collection
+      
       const facesUpdateResult = await facesCollection.updateMany(
         { unique_id: { $in: uniqueIds } },
         { $set: { label } }
       );
   
-      // Update the label for all similar faces in the faces_with_boxes collection
+      
       const facesWithBoxesUpdateResult = await facesWithBoxesCollection.updateMany(
         { unique_id: { $in: uniqueIds } },
         { $set: { label } }
@@ -436,7 +433,7 @@ app.post('/tag-face', async (req, res) => {
     const db = await getDatabase();
       const facesCollection = db.collection('faces_with_boxes');
   
-      // Fetch distinct labels from the collection
+      
       const labels = await facesCollection.distinct("label");
       res.json(labels);
     } catch (error) {
@@ -451,10 +448,9 @@ const WordNet = require('node-wordnet');
 const wordnet = new WordNet();
 const stemmer = natural.PorterStemmer;
 
-// Cache for synonyms
+
 const synonymsCache = new Map();
 
-// Function to get synonyms with caching
 const getSynonyms = async (keyword) => {
     if (synonymsCache.has(keyword)) {
         return synonymsCache.get(keyword);
@@ -476,7 +472,7 @@ const getSynonyms = async (keyword) => {
     });
 };
 
-// Function to compute Jaro-Winkler similarity score
+
 const computeJaroWinklerSimilarity = (text1, text2) => {
     return natural.JaroWinklerDistance(text1, text2);
 };
@@ -496,20 +492,20 @@ app.get('/search', async (req, res) => {
         const facesCollection = db.collection('faces');
         const facesWithBoxesCollection = db.collection('face_with_boxes');
 
-        // Split the keyword into individual words and get their stems
+        // Spliting the keyword into individual words and get their stems
         const words = keyword.split(' ');
         const stems = words.map(word => stemmer.stem(word));
 
-        // Get synonyms for the keyword and each word, then stem them
+        // To Get synonyms for the keyword and each word, then stem them
         const synonymPromises = [getSynonyms(keyword), ...words.map(word => getSynonyms(word))];
         const synonymsLists = await Promise.all(synonymPromises);
         const allSynonyms = new Set(synonymsLists.flat().concat(words).concat(stems));
         const stemmedSynonyms = new Set([...allSynonyms].map(word => stemmer.stem(word)));
 
-        // Generate regex patterns for MongoDB queries
+        // Generating regex patterns for MongoDB queries
         const regexList = [...allSynonyms, ...stemmedSynonyms].map(term => new RegExp(term, 'i'));
 
-        // Perform MongoDB queries with regex patterns
+        // Performing MongoDB queries with regex patterns
         const [captionsResults, ocrResults, objectDetectionResults, facesResults, facesWithBoxesResults] = await Promise.all([
             captionCollection.find({ text: { $in: regexList } }).toArray(),
             ocrCollection.find({ text: { $in: regexList } }).toArray(),
@@ -518,7 +514,7 @@ app.get('/search', async (req, res) => {
             facesWithBoxesCollection.find({ label: { $in: regexList } }).toArray()
         ]);
 
-        // Filter results based on Jaro-Winkler similarity
+        // Filtering results based on Jaro-Winkler similarity
         const filterItems = (items, field) => {
             return items.filter(item => {
                 const text = item[field] || '';
@@ -533,17 +529,17 @@ app.get('/search', async (req, res) => {
             return filteredObjects.length > 0 ? { ...item, objects: filteredObjects } : null;
         }));
 
-        // Remove duplicates based on a unique identifier
+       
         const removeDuplicates = (arr, key) => {
             return Array.from(new Map(arr.map(item => [item[key], item])).values());
         };
 
-        // Ensure unique results
+      
         const uniqueCaptions = removeDuplicates(filteredCaptions, 'hash');
         const uniqueOCR = removeDuplicates(filteredOCR, 'hash');
         const uniqueObjectDetection = removeDuplicates(filteredObjectDetection, 'hash');
 
-        // Combine all unique results
+       
         const results = {
             captions: uniqueCaptions,
             ocr: uniqueOCR,
