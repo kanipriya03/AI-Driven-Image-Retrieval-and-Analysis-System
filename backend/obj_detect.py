@@ -1,4 +1,3 @@
-# obj_detect.py
 from transformers import AutoFeatureExtractor, AutoModelForObjectDetection
 from PIL import Image
 import torch
