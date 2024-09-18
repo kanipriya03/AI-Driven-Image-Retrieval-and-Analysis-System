@@ -51,7 +51,7 @@ This system uses MongoDB to handle image metadata efficiently. The frontend, dev
 
 Install the following packages listed in `backend/requirements.txt`:
 
-   `` plaintext
+  ```
    transformers==4.42.3
    pytesseract==0.3.10
    face_recognition==1.3.0
@@ -59,7 +59,8 @@ Install the following packages listed in `backend/requirements.txt`:
    torch==2.0.0
    Pillow==10.0.0
    pymongo==4.3.0
-   nltk==3.8.1 ``
+   nltk==3.8.1
+```
 
 
 ### Setup Instructions
