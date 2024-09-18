@@ -1,0 +1,66 @@
+
+
+   .faces-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 images per row */
+    gap: 20px; /* Space between the images */
+    justify-items: center; /* Center images within grid items */
+  }
+  
+  .face-item {
+    position: relative;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .face-image {
+    width: 300px; /* Image size */
+    height: 300px;
+    object-fit: contain; /* Ensures image fits within the bounds */
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+  }
+  
+  .face-item.selected .face-image {
+    transform: scale(1.1); /* Slightly enlarge the image when selected */
+  }
+  
+  .face-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .face-actions button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .face-actions button:hover {
+    background-color: #0056b3;
+  }
+  
+  .face-item.selected .face-actions {
+    display: flex; /* Show actions when an image is selected */
+  }
+  .back-button {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 10px 0; /* Space above and below the button */
+    background-color: #007bff; /* Primary color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+  }
+  .back-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }

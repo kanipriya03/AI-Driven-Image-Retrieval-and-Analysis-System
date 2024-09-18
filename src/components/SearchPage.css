@@ -1,0 +1,53 @@
+/* Grid layout for displaying images */
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 columns */
+    gap: 10px; /* Space between grid items */
+    padding: 16px; /* Padding around the grid */
+}
+
+/* Styling for each image item */
+.image-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ddd; /* Border around each image */
+    padding: 8px;
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for better visibility */
+    background-color: #fff; /* Background color */
+    overflow: hidden; /* Hide overflow to maintain layout */
+}
+
+/* Image styling */
+.image-item img {
+    max-width: 100%; /* Ensure image fits within container width */
+    max-height: 200px; /* Fixed maximum height */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 4px; /* Rounded corners for the image */
+}
+
+/* Responsive layout adjustment */
+@media (max-width: 1200px) {
+    .image-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    }
+}
+
+@media (max-width: 900px) {
+    .image-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    }
+}
+
+@media (max-width: 600px) {
+    .image-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    }
+}
+
+@media (max-width: 400px) {
+    .image-grid {
+        grid-template-columns: 1fr; /* 1 column */
+    }
+}
