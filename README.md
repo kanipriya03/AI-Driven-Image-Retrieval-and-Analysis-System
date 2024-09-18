@@ -51,12 +51,113 @@ This system uses MongoDB to handle image metadata efficiently. The frontend, dev
 
 Install the following packages listed in `backend/requirements.txt`:
 
-```plaintext
-transformers==4.42.3
-pytesseract==0.3.10
-face_recognition==1.3.0
-sentence-transformers==2.2.2
-torch==2.0.0
-Pillow==10.0.0
-pymongo==4.3.0
-nltk==3.8.1'
+   ``plaintext
+   transformers==4.42.3
+   pytesseract==0.3.10
+   face_recognition==1.3.0
+   sentence-transformers==2.2.2
+   torch==2.0.0
+   Pillow==10.0.0
+   pymongo==4.3.0
+   nltk==3.8.1'``
+
+
+### Setup Instructions
+
+## Backend Setup
+
+1. **Clone the Repository:**
+    ```
+    git clone https://github.com/your-username/my_local_folder.git
+    cd my_local_folder
+    ```
+
+2. **Install Python Dependencies:**
+    - Navigate to the backend directory:
+      ```
+      cd backend
+      ```
+    - Set up a virtual environment:
+      ```
+      python -m venv env
+      ```
+      Activate the virtual environment:
+      ```bash
+      # For Windows: env\Scripts\activate
+      ```
+    - Install the required packages:
+      ```
+      pip install -r requirements.txt
+      ```
+
+3. **Set Up Tesseract for OCR:**
+    - Follow the instructions on the Tesseract OCR installation page.
+
+4. **Configure MongoDB:**
+    - Update `db.js` with your MongoDB connection string. For MongoDB Atlas, refer to [this guide](https://docs.atlas.mongodb.com/) for your connection string.
+
+## Frontend Setup
+
+1. **Navigate to the Frontend Directory:**
+    ```
+    cd ../frontend
+    ```
+
+2. **Install Node.js Dependencies:**
+    ```
+    npm install
+    ```
+
+3. **Run the React Development Server:**
+    ```
+    npm start
+    ```
+    - Access the application in your browser at `http://localhost:3000`.
+
+## Running the Backend Server
+
+1. **Start the backend server from the `backend/` directory:**
+    ```
+    node app.js
+    ```
+    - The backend will be accessible at `http://localhost:5000`.
+
+## How to Use
+
+1. **Uploading Images:**
+    - Navigate to the Upload page.
+    - Select images or a ZIP file to upload.
+    - The system will process the images to extract text, detect objects, recognize faces, and generate captions.
+    - Metadata for each image will be stored in MongoDB.
+
+2. **Searching for Images:**
+    - Go to the Search page.
+    - Enter keywords, object labels, or facial features to retrieve relevant images.
+    - The search functionality uses:
+        - **Synonyms:** Extracts synonyms and performs queries based on these.
+        - **Text Similarity:** Uses Jaro-Winkler similarity to match terms against text in the database.
+
+3. **Face Tagging:**
+    - Visit the Faces section to view detected faces.
+    - Tag faces with names or search for images containing the same or similar faces.
+
+4. **Viewing and Managing Images:**
+    - In the Images section, browse through uploaded images and their metadata, including OCR text, captions, and object labels.
+
+## Future Enhancements
+
+- **Advanced Search Capabilities:** Enhance search functionalities with more complex queries combining text, objects, and face recognition.
+- **Improved Face Detection:** Integrate additional models or techniques to improve face recognition accuracy.
+- **Performance Optimization:** Optimize the system to handle larger datasets and high-volume queries efficiently.
+
+## Contributions
+
+- Contributions are welcome! To contribute:
+  - Open an issue on GitHub.
+  - Submit a pull request with your changes.
+  - Please adhere to the repository’s contribution guidelines and ensure your code passes all tests before submitting.
+
+
+
+
+
