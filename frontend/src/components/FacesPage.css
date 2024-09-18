@@ -2,9 +2,9 @@
 
    .faces-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 images per row */
-    gap: 20px; /* Space between the images */
-    justify-items: center; /* Center images within grid items */
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px; 
+    justify-items: center; 
   }
   
   .face-item {
@@ -14,15 +14,15 @@
   }
   
   .face-image {
-    width: 300px; /* Image size */
+    width: 300px; 
     height: 300px;
-    object-fit: contain; /* Ensures image fits within the bounds */
+    object-fit: contain; 
     border-radius: 8px;
     transition: transform 0.3s ease;
   }
   
   .face-item.selected .face-image {
-    transform: scale(1.1); /* Slightly enlarge the image when selected */
+    transform: scale(1.1);
   }
   
   .face-actions {
@@ -46,13 +46,13 @@
   }
   
   .face-item.selected .face-actions {
-    display: flex; /* Show actions when an image is selected */
+    display: flex;
   }
   .back-button {
     display: inline-block;
     padding: 5px 10px;
-    margin: 10px 0; /* Space above and below the button */
-    background-color: #007bff; /* Primary color */
+    margin: 10px 0; 
+    background-color: #007bff; 
     color: white;
     border: none;
     border-radius: 5px;
@@ -62,5 +62,5 @@
     text-decoration: none;
   }
   .back-button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+    background-color: #0056b3; 
   }
